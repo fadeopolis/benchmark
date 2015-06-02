@@ -35,11 +35,15 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 endif()
 
 # Expose public API
-target_include_directories(benchmark PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(benchmark PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
 # Install target (will install the library to specified CMAKE_INSTALL_PREFIX variable)
 install(
   TARGETS benchmark
+  EXPORT  google-benchmark
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -49,3 +53,9 @@ install(
   DIRECTORY "${PROJECT_SOURCE_DIR}/include/benchmark"
   DESTINATION include
   FILES_MATCHING PATTERN "*.*h")
+
+install(EXPORT google-benchmark DESTINATION cmake)
+
+export(
+  EXPORT google-benchmark
+  FILE "${CMAKE_BINARY_DIR}/cmake/google-benchmark.cmake")
